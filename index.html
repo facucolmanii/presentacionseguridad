@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seguridad Informática – Camping 44</title>
+  <style>
+    :root {
+      --bg: #f3f5f9;
+      --bg-accent: #fff;
+      --surface: rgba(255, 255, 255, 0.85);
+      --surface-strong: #ffffff;
+      --text: #141720;
+      --muted: #5f6675;
+      --primary: #c81f36;
+      --primary-2: #a81227;
+      --border: rgba(18, 24, 42, 0.09);
+      --shadow-lg: 0 24px 64px rgba(16, 24, 40, 0.14);
+      --shadow-md: 0 14px 34px rgba(16, 24, 40, 0.1);
+      --radius-xl: 28px;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --slide-w: min(1240px, 94vw, calc(88svh * 16 / 9));
+      --slide-h: min(88svh, calc(94vw * 9 / 16));
+      --transition: 620ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0b0f1a;
+      --bg-accent: #12182a;
+      --surface: rgba(19, 26, 43, 0.74);
+      --surface-strong: #131b2e;
+      --text: #edf2ff;
+      --muted: #a5afc4;
+      --primary: #ff4862;
+      --primary-2: #ff2f4d;
+      --border: rgba(255, 255, 255, 0.09);
+      --shadow-lg: 0 24px 72px rgba(0, 0, 0, 0.45);
+      --shadow-md: 0 14px 36px rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100svh;
+      font-family: "Inter", "Segoe UI", "SF Pro Display", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 82% 14%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 32%),
+        radial-gradient(circle at 15% 88%, color-mix(in srgb, var(--primary) 10%, transparent), transparent 38%),
+        linear-gradient(160deg, var(--bg-accent), var(--bg));
+      overflow: hidden;
+      transition: background 380ms ease;
+    }
+
+    .presentation {
+      position: relative;
+      width: 100vw;
+      height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: clamp(12px, 2vw, 22px);
+    }
+
+    .deck {
+      position: relative;
+      width: var(--slide-w);
+      height: var(--slide-h);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      background: linear-gradient(140deg, var(--surface-strong), color-mix(in srgb, var(--surface-strong) 88%, var(--primary) 12%));
+      isolation: isolate;
+      backdrop-filter: blur(10px);
+    }
+
+    .deck::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 34%),
+        radial-gradient(circle at 5% 96%, color-mix(in srgb, var(--primary) 9%, transparent), transparent 42%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: clamp(26px, 4.5vw, 58px) clamp(20px, 5.5vw, 72px);
+      opacity: 0;
+      transform: translateX(8%) scale(0.985);
+      transition: opacity var(--transition), transform var(--transition);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    .slide.to-left { transform: translateX(-7%) scale(0.985); }
+    .slide.to-right { transform: translateX(7%) scale(0.985); }
+
+    .content {
+      width: min(980px, 100%);
+      display: grid;
+      justify-items: center;
+      gap: clamp(12px, 1.8vw, 24px);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 560ms ease, transform 560ms ease;
+    }
+
+    .slide.active .content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .chip {
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid color-mix(in srgb, var(--primary) 25%, var(--border));
+      background: color-mix(in srgb, var(--primary) 9%, var(--surface));
+      color: var(--primary);
+      font-weight: 700;
+      font-size: clamp(0.8rem, 1.4vw, 0.95rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      text-wrap: balance;
+      max-width: 16ch;
+    }
+
+    h1 { font-size: clamp(2.1rem, 5.8vw, 4.9rem); }
+    h2 { font-size: clamp(1.75rem, 4.4vw, 3.4rem); }
+
+    .subtitle,
+    .message {
+      margin: 0;
+      max-width: 58ch;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.1vw, 1.5rem);
+      line-height: 1.45;
+      text-wrap: balance;
+    }
+
+    .message {
+      font-size: clamp(1.35rem, 3.2vw, 2.35rem);
+      color: var(--primary);
+      font-weight: 680;
+      font-style: italic;
+    }
+
+    .icon {
+      width: clamp(58px, 7.2vw, 90px);
+      aspect-ratio: 1;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      font-size: clamp(1.9rem, 3.8vw, 3rem);
+      color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+      border: 1px solid color-mix(in srgb, var(--primary) 26%, var(--border));
+      box-shadow: var(--shadow-md);
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      width: min(860px, 100%);
+      display: grid;
+      gap: clamp(9px, 1.3vw, 14px);
+    }
+
+    li {
+      text-align: left;
+      font-size: clamp(1rem, 2.2vw, 1.45rem);
+      line-height: 1.36;
+      padding: clamp(10px, 1.3vw, 16px) clamp(12px, 1.8vw, 18px);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      box-shadow: 0 10px 24px rgba(12, 17, 32, 0.08);
+    }
+
+    li strong { color: var(--primary); }
+
+    .controls {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px clamp(12px, 2vw, 22px) calc(12px + env(safe-area-inset-bottom));
+      background: color-mix(in srgb, var(--surface-strong) 78%, transparent);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--surface) 90%, transparent);
+      color: var(--text);
+      height: 42px;
+      min-width: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 1.15rem;
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
+      background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      display: grid;
+      gap: 7px;
+      text-align: left;
+    }
+
+    .counter {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 650;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: var(--radius-pill);
+      background: color-mix(in srgb, var(--muted) 25%, transparent);
+      overflow: hidden;
+    }
+
+    .bar > span {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary-2), var(--primary));
+      transition: width 420ms ease;
+    }
+
+    .top-right {
+      position: absolute;
+      top: clamp(10px, 2vh, 18px);
+      right: clamp(10px, 2vw, 18px);
+      z-index: 6;
+      display: flex;
+      gap: 8px;
+    }
+
+    .hint {
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      padding: 7px 12px;
+      font-size: 0.76rem;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--surface) 90%, transparent);
+      font-weight: 650;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 920px), (max-aspect-ratio: 16/10) {
+      .deck {
+        width: 100%;
+        height: 100%;
+        border-radius: 16px;
+      }
+
+      .slide { padding-bottom: 86px; }
+
+      .controls {
+        grid-template-columns: auto 1fr auto auto;
+        gap: 8px;
+      }
+
+      li { font-size: clamp(0.96rem, 2.5vw, 1.13rem); }
+    }
+
+    @media (max-width: 640px) {
+      .presentation { padding: 0; }
+      .deck { border-radius: 0; }
+      .top-right { right: 8px; top: 8px; }
+      .hint { display: none; }
+      .controls {
+        grid-template-columns: auto auto 1fr auto auto;
+        padding-inline: 10px;
+      }
+
+      .counter { font-size: 0.75rem; }
+
+      h1 { font-size: clamp(1.8rem, 8.8vw, 2.4rem); }
+      h2 { font-size: clamp(1.45rem, 7.5vw, 1.9rem); }
+
+      .subtitle,
+      .message { font-size: clamp(0.98rem, 4.3vw, 1.14rem); }
+
+      .slide { padding: 18px 14px 90px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="presentation" aria-label="Presentación Seguridad Informática Camping 44">
+    <section class="deck" id="deck">
+      <div class="top-right">
+        <span class="hint">← → navegar</span>
+        <button class="btn" id="themeBtn" aria-label="Cambiar modo claro/oscuro" title="Modo oscuro">🌙</button>
+        <button class="btn" id="fsBtn" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
+      </div>
+
+      <article class="slide active" data-title="Título">
+        <div class="content">
+          <div class="icon">🛡️</div>
+          <p class="chip">Camping 44 · Seguridad Informática</p>
+          <h1>Uso responsable de sistemas y datos</h1>
+          <p class="subtitle">Guía práctica para evitar errores comunes y proteger la información de todos los días.</p>
+        </div>
+      </article>
+
+      <article class="slide" data-title="Importancia">
+        <div class="content">
+          <div class="icon">🎯</div>
+          <h2>¿Por qué importa?</h2>
+          <ul>
+            <li><strong>Un archivo perdido</strong> puede frenar ventas, cobranzas o atención al cliente.</li>
+            <li><strong>Un clic por apuro</strong> puede abrir la puerta a un fraude por correo.</li>
+            <li><strong>Una contraseña compartida</strong> impide saber quién hizo cada acción.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="slide" data-title="Contraseñas">
+        <div class="content">
+          <div class="icon">🔐</div>
+          <h2>Usuarios y contraseñas</h2>
+          <ul>
+            <li>Tu usuario es <strong>personal</strong>, como tu DNI laboral: no se presta.</li>
+            <li>Usar 2FA evita accesos aunque alguien descubra tu clave.</li>
+            <li>Ejemplo real: si compartís tu cuenta y hay un error, <strong>no se puede auditar bien</strong>.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="slide" data-title="Equipos">
+        <div class="content">
+          <div class="icon">💻</div>
+          <h2>Uso de equipos</h2>
+          <ul>
+            <li>La PC de trabajo se usa para tareas de trabajo.</li>
+            <li>No instalar programas sin autorización de IT (pueden traer malware).</li>
+            <li>No iniciar sesión con cuentas personales en equipos de la empresa.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="slide" data-title="Guardar información">
+        <div class="content">
+          <div class="icon">🗂️</div>
+          <h2>Dónde guardar la información</h2>
+          <ul>
+            <li>Documentos en <strong>Google Drive</strong> (respaldo + colaboración).</li>
+            <li>Datos operativos en <strong>Odoo</strong> (trazabilidad y control).</li>
+            <li>No guardar en escritorio local o pendrive: se pierde fácil y no hay respaldo.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="slide" data-title="Datos sensibles">
+        <div class="content">
+          <div class="icon">🧠</div>
+          <h2>Datos sensibles = cuidado extra</h2>
+          <ul>
+            <li>Clientes, listas de precios, reportes internos y contraseñas son confidenciales.</li>
+            <li>Compartí solo con quien realmente lo necesita para trabajar.</li>
+            <li>Ejemplo: un precio filtrado por WhatsApp puede afectar negociaciones.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="slide" data-title="IA">
+        <div class="content">
+          <div class="icon">🤖</div>
+          <h2>Uso de Inteligencia Artificial</h2>
+          <ul>
+            <li>Está permitido para apoyo: redacción, resúmenes, ideas.</li>
+            <li>Está prohibido cargar datos reales de la empresa en herramientas públicas.</li>
+            <li>Regla simple: si tiene nombre de cliente, precio o contraseña, <strong>no se sube</strong>.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="slide" data-title="Phishing">
+        <div class="content">
+          <div class="icon">📧</div>
+          <h2>Correos y phishing</h2>
+          <ul>
+            <li>Desconfiá de urgencias: “pagá ahora”, “tu cuenta vence hoy”.</li>
+            <li>Antes de hacer clic, revisá remitente y dirección del enlace.</li>
+            <li>Ejemplo: “proveedor” con dominio raro = probable intento de fraude.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="slide" data-title="Incidentes">
+        <div class="content">
+          <div class="icon">🚨</div>
+          <h2>Si hay incidente, avisá ya</h2>
+          <ul>
+            <li>Errores del sistema, bloqueos, ventanas extrañas o archivos que desaparecen.</li>
+            <li>No ocultes el problema: reportar rápido reduce el impacto.</li>
+            <li>Canal sugerido: avisar de inmediato al equipo de IT + tu responsable.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="slide" data-title="Regla clave">
+        <div class="content">
+          <div class="icon">🧭</div>
+          <h2>Regla clave</h2>
+          <p class="message">“Si dudás, consultá”.</p>
+          <p class="subtitle">Una consulta a tiempo evita horas de trabajo perdido.</p>
+        </div>
+      </article>
+
+      <article class="slide" data-title="Cierre">
+        <div class="content">
+          <div class="icon">🤝</div>
+          <h2>La seguridad es responsabilidad de todos</h2>
+          <p class="subtitle">Con hábitos simples, protegemos clientes, operación y reputación de Camping 44.</p>
+          <p class="chip">Gracias por ser parte del cuidado digital</p>
+        </div>
+      </article>
+
+      <footer class="controls" aria-label="Barra de navegación">
+        <button class="btn" id="prevBtn" aria-label="Slide anterior">←</button>
+        <button class="btn" id="nextBtn" aria-label="Siguiente slide">→</button>
+        <div class="status" aria-live="polite">
+          <div class="counter" id="counter">Slide 1 de 11</div>
+          <div class="bar"><span id="bar"></span></div>
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const slides = [...document.querySelectorAll('.slide')];
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const counter = document.getElementById('counter');
+      const bar = document.getElementById('bar');
+      const fsBtn = document.getElementById('fsBtn');
+      const themeBtn = document.getElementById('themeBtn');
+
+      let current = 0;
+      let touchX = null;
+      const total = slides.length;
+      const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+      const updateUI = () => {
+        counter.textContent = `Slide ${current + 1} de ${total}`;
+        bar.style.width = `${((current + 1) / total) * 100}%`;
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === total - 1;
+      };
+
+      const goTo = (index) => {
+        const target = clamp(index, 0, total - 1);
+        if (target === current) return;
+
+        const direction = target > current ? 'next' : 'prev';
+        const leaving = slides[current];
+        const entering = slides[target];
+
+        leaving.classList.remove('active', 'to-left', 'to-right');
+        entering.classList.remove('active', 'to-left', 'to-right');
+
+        leaving.classList.add(direction === 'next' ? 'to-left' : 'to-right');
+        entering.classList.add('active');
+
+        window.setTimeout(() => {
+          slides.forEach((slide, i) => {
+            if (i !== target) {
+              slide.classList.remove('active', 'to-left', 'to-right');
+            }
+          });
+        }, 620);
+
+        current = target;
+        updateUI();
+      };
+
+      const next = () => goTo(current + 1);
+      const prev = () => goTo(current - 1);
+
+      const toggleFullscreen = async () => {
+        try {
+          if (!document.fullscreenElement) {
+            await document.documentElement.requestFullscreen?.();
+          } else {
+            await document.exitFullscreen?.();
+          }
+        } catch {
+          // Evita romper UX si navegador bloquea fullscreen.
+        }
+      };
+
+      const applyTheme = (theme) => {
+        root.setAttribute('data-theme', theme);
+        localStorage.setItem('presentation-theme', theme);
+        themeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+        themeBtn.title = theme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+      };
+
+      const toggleTheme = () => {
+        const currentTheme = root.getAttribute('data-theme') || 'light';
+        applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+      };
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight' || event.key === 'PageDown') {
+          event.preventDefault();
+          next();
+        }
+        if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+          event.preventDefault();
+          prev();
+        }
+        if (event.key.toLowerCase() === 'f') {
+          event.preventDefault();
+          toggleFullscreen();
+        }
+        if (event.key.toLowerCase() === 'd') {
+          event.preventDefault();
+          toggleTheme();
+        }
+      });
+
+      document.addEventListener('touchstart', (event) => {
+        touchX = event.changedTouches[0].clientX;
+      }, { passive: true });
+
+      document.addEventListener('touchend', (event) => {
+        if (touchX === null) return;
+        const delta = event.changedTouches[0].clientX - touchX;
+        if (Math.abs(delta) > 45) {
+          if (delta < 0) next();
+          if (delta > 0) prev();
+        }
+        touchX = null;
+      }, { passive: true });
+
+      document.addEventListener('fullscreenchange', () => {
+        fsBtn.textContent = document.fullscreenElement ? '🡼' : '⛶';
+      });
+
+      prevBtn.addEventListener('click', prev);
+      nextBtn.addEventListener('click', next);
+      fsBtn.addEventListener('click', toggleFullscreen);
+      themeBtn.addEventListener('click', toggleTheme);
+
+      const savedTheme = localStorage.getItem('presentation-theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        applyTheme(savedTheme);
+      } else {
+        applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      }
+
+      updateUI();
+    })();
+  </script>
+</body>
+</html>
