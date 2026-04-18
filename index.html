@@ -196,7 +196,22 @@
     }
 
     html[data-theme="dark"] .brand-logo-img {
-      filter: brightness(1.03) saturate(1.02) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
+      display: none;
+    }
+
+    .brand-wordmark-dark {
+      display: none;
+      margin: 0;
+      font-size: clamp(1.4rem, 2.8vw, 2.2rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      color: #ff405b;
+      text-transform: uppercase;
+      text-shadow: 0 6px 18px rgba(255, 64, 91, 0.34);
+    }
+
+    html[data-theme="dark"] .brand-wordmark-dark {
+      display: block;
     }
 
     ul {
@@ -365,6 +380,7 @@
       <article class="slide active" data-title="Título">
         <div class="content">
           <img id="logoImage" class="brand-logo-img" src="LOGO CAMPING.png" alt="Logo oficial Camping 44" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block';">
+          <p class="brand-wordmark-dark" aria-hidden="true">Camping 44</p>
           <p id="logoFallback" class="chip" style="display:none;">Camping 44</p>
           <p class="chip">Camping 44 · Seguridad Informática</p>
           <h1>Uso responsable de sistemas y datos</h1>
