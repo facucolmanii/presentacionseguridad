@@ -188,17 +188,15 @@
     }
 
     .brand-logo-img {
-      width: clamp(190px, 28vw, 330px);
+      width: clamp(90px, 14vw, 155px);
       height: auto;
       display: block;
       object-fit: contain;
-      mix-blend-mode: multiply;
-      filter: contrast(1.08) saturate(1.02) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.14));
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.14));
     }
 
     html[data-theme="dark"] .brand-logo-img {
-      mix-blend-mode: screen;
-      filter: brightness(1.05) contrast(1.06) saturate(1.02) drop-shadow(0 10px 22px rgba(0, 0, 0, 0.35));
+      filter: brightness(1.03) saturate(1.02) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
     }
 
     ul {
@@ -366,7 +364,7 @@
 
       <article class="slide active" data-title="Título">
         <div class="content">
-          <img class="brand-logo-img" src="LOGO CAMPING.png" alt="Logo oficial Camping 44" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block';">
+          <img id="logoImage" class="brand-logo-img" src="LOGO CAMPING.png" alt="Logo oficial Camping 44" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block';">
           <p id="logoFallback" class="chip" style="display:none;">Camping 44</p>
           <p class="chip">Camping 44 · Seguridad Informática</p>
           <h1>Uso responsable de sistemas y datos</h1>
@@ -571,11 +569,37 @@
       const bar = document.getElementById('bar');
       const fsBtn = document.getElementById('fsBtn');
       const themeBtn = document.getElementById('themeBtn');
+      const logoImage = document.getElementById('logoImage');
 
       let current = 0;
       let touchX = null;
       const total = slides.length;
       const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+      const removeWhiteBackgroundFromLogo = () => {
+        if (!logoImage || !logoImage.complete || logoImage.naturalWidth === 0) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = logoImage.naturalWidth;
+        canvas.height = logoImage.naturalHeight;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) return;
+
+        ctx.drawImage(logoImage, 0, 0);
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imgData.data;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          if (r > 238 && g > 238 && b > 238) {
+            data[i + 3] = 0;
+          }
+        }
+
+        ctx.putImageData(imgData, 0, 0);
+        logoImage.src = canvas.toDataURL('image/png');
+      };
 
       const updateUI = () => {
         counter.textContent = `Slide ${current + 1} de ${total}`;
@@ -684,6 +708,14 @@
         applyTheme(savedTheme);
       } else {
         applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      }
+
+      if (logoImage) {
+        if (logoImage.complete) {
+          removeWhiteBackgroundFromLogo();
+        } else {
+          logoImage.addEventListener('load', removeWhiteBackgroundFromLogo, { once: true });
+        }
       }
 
       updateUI();
