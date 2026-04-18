@@ -187,6 +187,18 @@
       box-shadow: var(--shadow-md);
     }
 
+    .brand-logo {
+      width: clamp(210px, 30vw, 360px);
+      margin-bottom: 6px;
+      filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.12));
+    }
+
+    .brand-logo svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
     ul {
       margin: 0;
       padding: 0;
@@ -352,7 +364,27 @@
 
       <article class="slide active" data-title="Título">
         <div class="content">
-          <div class="icon">🛡️</div>
+          <div class="brand-logo" aria-label="Logo Camping 44">
+            <svg viewBox="0 0 680 360" role="img" aria-hidden="true">
+              <defs>
+                <linearGradient id="ringFade" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#16181f" stop-opacity="0.95"/>
+                  <stop offset="100%" stop-color="#1e2130" stop-opacity="0.55"/>
+                </linearGradient>
+              </defs>
+              <g transform="translate(520,185)">
+                <circle r="148" fill="none" stroke="url(#ringFade)" stroke-width="5"/>
+                <circle r="118" fill="none" stroke="url(#ringFade)" stroke-width="5"/>
+                <circle r="88" fill="none" stroke="url(#ringFade)" stroke-width="5"/>
+                <circle r="58" fill="none" stroke="url(#ringFade)" stroke-width="5"/>
+                <circle r="28" fill="none" stroke="url(#ringFade)" stroke-width="5"/>
+                <line x1="-148" y1="0" x2="148" y2="0" stroke="#10131c" stroke-opacity="0.75" stroke-width="4"/>
+                <line x1="0" y1="-148" x2="0" y2="148" stroke="#10131c" stroke-opacity="0.75" stroke-width="4"/>
+              </g>
+              <text x="16" y="150" fill="#e01224" font-size="112" font-weight="900" font-family="Arial, Helvetica, sans-serif">CAMPING</text>
+              <text x="18" y="265" fill="#e01224" font-size="112" font-weight="900" font-family="Arial, Helvetica, sans-serif">44</text>
+            </svg>
+          </div>
           <p class="chip">Camping 44 · Seguridad Informática</p>
           <h1>Uso responsable de sistemas y datos</h1>
           <p class="subtitle">Resumen práctico del manual MP-APY-07 (vigencia 14/04/2026) para todo el equipo.</p>
