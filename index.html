@@ -187,16 +187,18 @@
       box-shadow: var(--shadow-md);
     }
 
-    .brand-wordmark {
-      margin: 0;
-      font-size: clamp(2.1rem, 5.5vw, 4.4rem);
-      font-weight: 900;
-      letter-spacing: 0.02em;
-      color: #e01224;
-      line-height: 0.95;
-      text-align: center;
-      text-transform: uppercase;
-      text-shadow: 0 8px 22px rgba(224, 18, 36, 0.25);
+    .brand-logo-img {
+      width: clamp(190px, 28vw, 330px);
+      height: auto;
+      display: block;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      filter: contrast(1.08) saturate(1.02) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.14));
+    }
+
+    html[data-theme="dark"] .brand-logo-img {
+      mix-blend-mode: screen;
+      filter: brightness(1.05) contrast(1.06) saturate(1.02) drop-shadow(0 10px 22px rgba(0, 0, 0, 0.35));
     }
 
     ul {
@@ -364,7 +366,8 @@
 
       <article class="slide active" data-title="Título">
         <div class="content">
-          <p class="brand-wordmark" aria-label="Marca Camping 44">Camping<br>44</p>
+          <img class="brand-logo-img" src="LOGO CAMPING.png" alt="Logo oficial Camping 44" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block';">
+          <p id="logoFallback" class="chip" style="display:none;">Camping 44</p>
           <p class="chip">Camping 44 · Seguridad Informática</p>
           <h1>Uso responsable de sistemas y datos</h1>
           <p class="subtitle">Resumen práctico del manual MP-APY-07 (vigencia 14/04/2026) para todo el equipo.</p>
